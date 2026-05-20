@@ -1,0 +1,175 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	
+  <PropertyGroup>
+    <!-- Select the framework(s) you wish to target.
+        Rhino 6: net45
+        Rhino 7: net48
+        Rhino 8 Windows: net48, net7.0, net7.0-windows, net7.0-windows10.0.22000.0, etc
+        Rhino 8 Mac: net7.0, net7.0-macos, net7.0-macos12.0, etc
+    -->
+    <TargetFrameworks>net7.0-windows;net7.0;net48</TargetFrameworks>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <TargetExt>.gha</TargetExt>
+    <NoWarn>NU1701;NETSDK1086</NoWarn>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+  </PropertyGroup>
+
+  <!-- Fix for .NET Framework 4.8 resource generation (non-string resources) -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+
+  <!-- AssemblyCompanyAttribute
+AssemblyConfigurationAttribute
+AssemblyDescriptionAttribute
+AssemblyFileVersionAttribute
+AssemblyInformationalVersionAttribute
+AssemblyProductAttribute
+AssemblyTitleAttribute
+AssemblyVersionAttribute -->
+  
+    <!-- Specifies information for Assembly and Yak -->
+  <!-- <PropertyGroup>
+    <Version>1.0</Version>
+    <Title>HelloGrasshopper</Title>
+    <Company>HelloGrasshopper Authors</Company>
+    <Description>Description of HelloGrasshopper</Description>
+  </PropertyGroup> -->
+  
+  <ItemGroup>
+    <PackageReference Include="Grasshopper" Version="8.0.23304.9001" ExcludeAssets="runtime" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <Reference Include="VirtualRobot.Core">
+      <HintPath>./VirtualRobot.Core.dll</HintPath>
+    </Reference>
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" ExcludeAssets="runtime" />
+    <ProjectReference Include="..\VizorLibs\VizorLibs.csproj" />
+  </ItemGroup>
+
+  <!-- For Windows only builds -->
+  <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) or $(TargetFramework.StartsWith('net4'))">
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <!-- Only explicit file inclusion -->
+  <PropertyGroup>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <Nullable>disable</Nullable>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="0_System/ContentUtilities.cs" />
+    <Compile Include="0_System/RobotLibraryConverter.cs" />
+    <Compile Include="0_System/VizorBaseComponent.cs" />
+    <Compile Include="0_System/TaskUtilities.cs" />
+    <Compile Include="0_System/ROSMessageHandler.cs" />
+    <Compile Include="0_System/DeviceComponent.cs" />
+    <Compile Include="1_Object/WsConnection.cs" />
+    <Compile Include="1_Object/ARWorker.cs" />
+    <Compile Include="1_Object/ARWorkerTeam.cs" />
+    <Compile Include="1_Object/TrackedObject.cs" />
+    <Compile Include="1_Object/Robot.cs" />
+    <Compile Include="2_Content/ConstructContent.cs" />
+    <Compile Include="2_Content/MakeWireframe.cs" />
+    <Compile Include="2_Content/ModelTracker.cs" />
+    <Compile Include="2_Content/PreviewContent.cs" />
+    <Compile Include="2_Content/SceneDynamic.cs" />
+    <Compile Include="2_Content/MakeWorkArea.cs" />
+    <Compile Include="2_Content/SceneModel.cs" />
+    <Compile Include="2_Content/MakeText.cs" />
+    <Compile Include="2_Content/MakeMesh.cs" />
+    <Compile Include="2_Content/MakeTrajectory.cs" />
+    <Compile Include="3_Task/MakeTaskSeries.cs" />
+    <Compile Include="3_Task/TaskController.cs" />
+    <Compile Include="3_Task/DeconstructTask.cs" />
+    <Compile Include="3_Task/SafetyZoneConfig.cs" />
+    <Compile Include="3_Task/ConstructTask.cs" />
+    <Compile Include="4_Utilities/GazeTracker.cs" />
+    <Compile Include="4_Utilities/PublishTopic.cs" />
+    <Compile Include="4_Utilities/SensorTracker.cs" />
+    <Compile Include="4_Utilities/PlanningSceneModel.cs" />
+    <Compile Include="4_Utilities/MonitorWorkArea.cs" />
+    <Compile Include="4_Utilities/PlanTrajectory.cs" />
+    <Compile Include="4_Utilities/RobotExecution.cs" />
+    <Compile Include="4_Utilities/SimulateDevice.cs" />
+    <Compile Include="4_Utilities/DeviceTracker.cs" />
+    <Compile Include="4_Utilities/MotionSimulation.cs" />
+    <Compile Include="Properties/Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="VizorInfo.cs" />
+    <Compile Include="Properties/AssemblyInfo.cs" />
+  </ItemGroup>
+  <!-- Explicitly embed Resources.resx since EnableDefaultItems is false -->
+  <ItemGroup>
+    <EmbeddedResource Include="Properties/Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="VirtualRobot.Core.dll" />
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Resources/ActionObject.png" />
+    <Content Include="Resources/ARDevice.png" />
+    <None Include="Resources/HRCController.png" />
+    <None Include="Resources/MarkerFrame.png" />
+    <Content Include="Resources/ARGeoms.png" />
+    <None Include="Resources/Artboard 1 copy 7.png" />
+    <None Include="Resources/icons-22.png" />
+    <None Include="Resources/icons-24.png" />
+    <None Include="Resources/icons-26.png" />
+    <None Include="Resources/icons-27.png" />
+    <None Include="Resources/icons-25.png" />
+    <None Include="Resources/icons-16.png" />
+    <None Include="Resources/icons-28.png" />
+    <None Include="Resources/icons-21.png" />
+    <None Include="Resources/DeviceTracker.png" />
+    <None Include="Resources/Artboard 1 copy 8.png" />
+    <None Include="Resources/icons-23.png" />
+    <None Include="Resources/Artboard 1 copy 10.png" />
+    <None Include="Resources/icons-29.png" />
+    <None Include="Resources/HRC.png" />
+    <None Include="Resources/ARLayers.png" />
+    <Content Include="Resources/InputDevice.png" />
+    <None Include="Resources/MarkerTracker.png" />
+    <Content Include="Resources/MockupDevice.png" />
+    <Content Include="Resources/ModelSender.png" />
+    <None Include="Resources/RobotController.png" />
+    <Content Include="Resources/RobotDevice.png" />
+    <None Include="Resources/RobotPoseSender.png" />
+    <None Include="Resources/RobotSimulator.png" />
+    <None Include="Resources/RobotTraj.png" />
+    <Content Include="Resources/TaskController.png" />
+    <None Include="Resources/visor.png" />
+    <Content Include="Resources/TaskSeries.png" />
+    <None Include="Resources/vizor-logo-24.png" />
+    <EmbeddedResource Include="Resources/WsConnection.png" />
+  </ItemGroup>
+
+  <!-- For Windows only builds -->
+  <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) or $(TargetFramework.StartsWith('net4'))">
+    <!-- <UseWindowsForms>true</UseWindowsForms> -->
+  </PropertyGroup>
+
+  <!-- Reference WinForms for .NET 7.0 on macOS -->
+  <ItemGroup Condition="!($(TargetFramework.Contains('-windows')) or $(TargetFramework.StartsWith('net4')))">
+    <!-- Rhino 8.11 and later you can use this -->
+    <!-- <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" /> -->
+    
+    <!-- Rhino 8.10 and earlier -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" ExcludeAssets="all" GeneratePathProperty="true" />
+    <Reference Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net48)\build\.NETFramework\v4.8\System.Windows.Forms.dll" Private="False" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+
+</Project>

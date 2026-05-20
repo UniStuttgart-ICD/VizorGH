@@ -1,0 +1,35 @@
+
+version: '2'
+services:
+  vizor-demo:
+    image: cxy201/noetic-vizor:v1.0
+    container_name: vizor-demo
+    tty: true        # docker run -t
+    environment:
+      - ROS_HOSTNAME=vizor-demo
+      - ROS_MASTER_URI=http://ros-core:11311
+    ports:
+      - "9090:9090" # gh
+      - "10000:10000" # holo1
+    depends_on:
+      - ros-core
+    command:
+      - roslaunch
+      - --wait
+      - vizor_package
+      - vizor2ros.launch
+      - production:=false 
+      - task_log_path:=/root/catkin_ws/data/task_logs
+      - stored_motion_path:=/root/catkin_ws/data/stored_plans
+      - mongo_db_path:=/root/catkin_ws/data/mongodb
+      - active:=HOLO1 # define which devices are participating in tasks
+      - physical:=false # define if the robots are physical or simulated
+      
+
+  ros-core:
+    image: cxy201/noetic-vizor:v1.0
+    container_name: ros-core
+    ports:
+      - "11311:11311" #Ros Master Port
+    command:
+      - roscore

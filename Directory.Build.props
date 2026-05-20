@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Vizor build configuration — imported automatically by MSBuild before any .csproj.
+
+  ENVIRONMENT VARIABLE OVERRIDES:
+    RHINO_PATH     Full path to Rhino executable (overrides auto-detection)
+    RHINO_VERSION  "7" or "8" (overrides auto-detection, prefers 8 otherwise)
+-->
+<Project>
+
+  <!-- Platform detection: $(OS) == "Windows_NT" on Windows, else Mac/Linux -->
+  <PropertyGroup>
+    <IsWindowsBuild Condition="'$(OS)' == 'Windows_NT'">true</IsWindowsBuild>
+    <IsWindowsBuild Condition="'$(OS)' != 'Windows_NT'">false</IsWindowsBuild>
+  </PropertyGroup>
+
+  <!-- Rhino version detection (priority: env var → path inference → probe → default) -->
+  <PropertyGroup>
+    <RhinoVersion Condition="'$(RHINO_VERSION)' == '7'">7</RhinoVersion>
+    <RhinoVersion Condition="'$(RHINO_VERSION)' == '8'">8</RhinoVersion>
+    <RhinoVersion Condition="'$(RhinoVersion)' == '' and $(RHINO_PATH.Contains('Rhino 7'))">7</RhinoVersion>
+    <RhinoVersion Condition="'$(RhinoVersion)' == '' and $(RHINO_PATH.Contains('Rhino 8'))">8</RhinoVersion>
+    <RhinoVersion Condition="'$(RhinoVersion)' == '' and '$(IsWindowsBuild)' == 'true' and Exists('C:\Program Files\Rhino 8\System\Rhino.exe')">8</RhinoVersion>
+    <RhinoVersion Condition="'$(RhinoVersion)' == '' and '$(IsWindowsBuild)' == 'true' and Exists('C:\Program Files\Rhino 7\System\Rhino.exe')">7</RhinoVersion>
+    <RhinoVersion Condition="'$(RhinoVersion)' == ''">8</RhinoVersion>
+  </PropertyGroup>
+
+  <!-- Rhino executable path (used by Vizor.csproj.user StartProgram) -->
+  <PropertyGroup Condition="'$(IsWindowsBuild)' == 'true'">
+    <RhinoExePath Condition="'$(RHINO_PATH)' != ''">$(RHINO_PATH)</RhinoExePath>
+    <RhinoExePath Condition="'$(RhinoExePath)' == '' and '$(RhinoVersion)' == '8'">C:\Program Files\Rhino 8\System\Rhino.exe</RhinoExePath>
+    <RhinoExePath Condition="'$(RhinoExePath)' == '' and '$(RhinoVersion)' == '7'">C:\Program Files\Rhino 7\System\Rhino.exe</RhinoExePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IsWindowsBuild)' == 'false'">
+    <RhinoExePath Condition="'$(RHINO_PATH)' != ''">$(RHINO_PATH)</RhinoExePath>
+    <RhinoExePath Condition="'$(RhinoExePath)' == ''">/Applications/Rhino 8.app/Contents/MacOS/Rhino</RhinoExePath>
+  </PropertyGroup>
+
+  <!-- Grasshopper Libraries deployment path -->
+  <PropertyGroup Condition="'$(IsWindowsBuild)' == 'true'">
+    <GHLibrariesPath>$(APPDATA)\Grasshopper\Libraries\Vizor</GHLibrariesPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IsWindowsBuild)' == 'false'">
+    <GHLibrariesPath>$(HOME)/Library/Application Support/McNeel/Rhinoceros/8.0/Frameworks/RhinoCommon.framework/Resources/ManagedPlugIns/GrasshopperPlugin.rhp/Libraries/Vizor</GHLibrariesPath>
+  </PropertyGroup>
+
+  <!--
+    TFM for the active debug build — gates post-build deployment to run only once.
+    Also documented in Vizor.csproj.user.template as the ActiveDebugFramework value.
+  -->
+  <PropertyGroup>
+    <ActiveDebugTfm Condition="'$(RhinoVersion)' == '7'">net48</ActiveDebugTfm>
+    <ActiveDebugTfm Condition="'$(RhinoVersion)' == '8' and '$(IsWindowsBuild)' == 'true'">net7.0-windows</ActiveDebugTfm>
+    <ActiveDebugTfm Condition="'$(RhinoVersion)' == '8' and '$(IsWindowsBuild)' == 'false'">net7.0</ActiveDebugTfm>
+  </PropertyGroup>
+
+</Project>

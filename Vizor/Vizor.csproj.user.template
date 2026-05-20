@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SETUP: Copy this file to Vizor.csproj.user (same directory, no .template extension).
+  Then change ActiveDebugFramework to match your Rhino version:
+
+    Rhino 7 (Windows)  → net48
+    Rhino 8 (Windows)  → net7.0-windows   ← default
+    Rhino 8 (Mac)      → net7.0
+
+  StartProgram is resolved automatically from Directory.Build.props — no path needed.
+
+  To override the Rhino path (non-standard install):
+    Windows:  setx RHINO_PATH "D:\Custom\Rhino 8\System\Rhino.exe"
+    Mac:      export RHINO_PATH="/Volumes/Apps/Rhino 8.app/Contents/MacOS/Rhino"
+
+  To force Rhino 7 when both versions are installed:
+    Windows:  setx RHINO_VERSION "7"
+    Mac:      export RHINO_VERSION="7"
+-->
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>$(RhinoExePath)</StartProgram>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>$(RhinoExePath)</StartProgram>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- CHANGE THIS to match your Rhino version (see instructions above) -->
+    <ActiveDebugFramework>net7.0-windows</ActiveDebugFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties/Resources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
